@@ -9,6 +9,7 @@ import express from 'express';
 import regpack from './RegPack/regPack.js';
 const { packer } = regpack;
 import send from 'send';
+import terser from 'terser';
 import WebSocket from 'ws';
 import yargs from 'yargs';
 
@@ -93,8 +94,12 @@ function* runPacker(source, options) {
 }
 
 function compressSource(source) {
+  const { code } = terser.minify(source, {
+    ecma: 9,
+    compress: true,
+  });
   let best = null;
-  for (const { compressed, uncompressed } of runPacker(source, {})) {
+  for (const { compressed, uncompressed } of runPacker(code, {})) {
     const buf = Buffer.from(compressed, 'utf8');
     if (best == null || buf.length < best.buf.length) {
       best = { buf, compressed, uncompressed };
