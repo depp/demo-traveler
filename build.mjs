@@ -207,7 +207,29 @@ async function watch(callback) {
 }
 
 async function buildCommand(args) {
-  printStats(await build());
+  const { _, quiet, printSize } = yargs
+    .options({
+      'quiet': {
+        type: 'boolean',
+        desc: 'Suppress output other than warnings and errors',
+      },
+      'print-size': {
+        type: 'boolean',
+        desc: 'Print JavaScript size to stdout',
+      },
+    })
+    .strict()
+    .parse(args);
+  if (_.length != 0) {
+    die(`Unexpected argument: ${JSON.stringify(_[0])}`);
+  }
+  const result = await build();
+  if (printSize) {
+    process.stdout.write(`${result.source.length}\n`);
+  }
+  if (!quiet) {
+    printStats(await build());
+  }
 }
 
 function watchCommand(args) {
