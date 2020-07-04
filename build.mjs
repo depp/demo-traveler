@@ -97,6 +97,9 @@ function compressSource(source) {
   let { code } = terser.minify(source, {
     ecma: 9,
     compress: true,
+    mangle: {
+      toplevel: true,
+    },
   });
   if (code.endsWith(';')) {
     code = code.substring(0, code.length - 1);
