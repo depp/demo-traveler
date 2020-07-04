@@ -2,6 +2,9 @@ import { mkdir, readFile, stat, writeFile } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
+import regpack from './RegPack/regPack.js';
+const { packer } = regpack;
+
 // Title of the demo.
 const title = 'Traveler';
 
@@ -68,8 +71,26 @@ function buildHTML(source, shim) {
   );
 }
 
+function* runPacker(source, options) {
+  for (const method of packer.runPacker(source, options)) {
+    yield method.contents;
+    const { result } = method;
+    for (let i = result.length - 1; i >= 0; i--) {
+      yield result[i][1];
+    }
+  }
+}
+
 function compressSource(source) {
-  return source.trim();
+  let text, buf;
+  for (const output of runPacker(source, {})) {
+    const obuf = Buffer.from(output, 'utf8');
+    if (text == null || obuf.length < buf.length) {
+      text = output;
+      buf = obuf;
+    }
+  }
+  return { text, buf };
 }
 
 async function build() {
@@ -77,11 +98,10 @@ async function build() {
     readFile(path('src.js'), 'utf8'),
     readFile(path('shim.html'), 'utf8'),
   ]);
-  const compressed = compressSource(source);
-  const demoData = Buffer.from(compressed, 'utf8');
-  const html = buildHTML(compressed, shim);
+  const { text, buf } = compressSource(source);
+  const html = buildHTML(text, shim);
   await Promise.all([
-    writeFile(path('build', 'demo.js'), demoData),
+    writeFile(path('build', 'demo.js'), buf),
     writeFile(path('build', 'demo.html'), html, 'utf8'),
   ]);
 }
