@@ -1,3 +1,2 @@
-const p = document.createElement('p');
-p.appendChild(document.createTextNode('Hello, World!'));
-b.appendChild(p);
+c.fillStyle = '#c52';
+c.fillRect(0, 0, a.width, a.height);
