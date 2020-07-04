@@ -1,0 +1,9 @@
+#!/bin/sh
+COMMIT_MSG_FILE=$1
+size=
+if node build.mjs ; then
+    size=$(wc -c build/demo.js)
+    set $size
+    size=$1
+fi
+git interpret-trailers --trim-empty --in-place --trailer "Size: ${size}" "${COMMIT_MSG_FILE}"
