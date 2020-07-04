@@ -94,10 +94,13 @@ function* runPacker(source, options) {
 }
 
 function compressSource(source) {
-  const { code } = terser.minify(source, {
+  let { code } = terser.minify(source, {
     ecma: 9,
     compress: true,
   });
+  if (code.endsWith(';')) {
+    code = code.substring(0, code.length - 1);
+  }
   let best = null;
   for (const { compressed, uncompressed } of runPacker(code, {})) {
     const buf = Buffer.from(compressed, 'utf8');
