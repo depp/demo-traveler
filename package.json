@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "chalk": "^4.1.0"
+  }
+}
