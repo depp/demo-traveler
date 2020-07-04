@@ -8,6 +8,9 @@ const { packer } = regpack;
 // Title of the demo.
 const title = 'Traveler';
 
+// Maximum size of packed source.
+const sizeLimit = 1024;
+
 // Create a directory, unless it already exists.
 async function mkdirExistOk(path) {
   try {
@@ -93,12 +96,24 @@ function compressSource(source) {
   return { text, buf };
 }
 
+function printStats(size) {
+  process.stderr.write(`Size: ${size} bytes\n`);
+  if (size > sizeLimit) {
+    const frac = (size - sizeLimit) / sizeLimit;
+    process.stderr.write(`Over limit by: ${(100 * frac).toFixed(1)}%\n`);
+  } else {
+    const frac = (sizeLimit - size) / sizeLimit;
+    process.stderr.write(`Space remaining: ${(100 * frac).toFixed(1)}%\n`);
+  }
+}
+
 async function build() {
   const [source, shim] = await Promise.all([
     readFile(path('src.js'), 'utf8'),
     readFile(path('shim.html'), 'utf8'),
   ]);
   const { text, buf } = compressSource(source);
+  printStats(buf.length);
   const html = buildHTML(text, shim);
   await Promise.all([
     writeFile(path('build', 'demo.js'), buf),
