@@ -83,24 +83,24 @@ function buildHTML(source, shim) {
 
 function* runPacker(source, options) {
   for (const method of packer.runPacker(source, options)) {
-    yield method.contents;
+    const uncompressed = method.contents;
+    yield { uncompressed, compressed: uncompressed };
     const { result } = method;
     for (let i = result.length - 1; i >= 0; i--) {
-      yield result[i][1];
+      yield { uncompressed, compressed: result[i][1] };
     }
   }
 }
 
 function compressSource(source) {
-  let text, buf;
-  for (const output of runPacker(source, {})) {
-    const obuf = Buffer.from(output, 'utf8');
-    if (text == null || obuf.length < buf.length) {
-      text = output;
-      buf = obuf;
+  let best = null;
+  for (const { compressed, uncompressed } of runPacker(source, {})) {
+    const buf = Buffer.from(compressed, 'utf8');
+    if (best == null || buf.length < best.buf.length) {
+      best = { buf, compressed, uncompressed };
     }
   }
-  return { text, buf };
+  return best;
 }
 
 const barBlocks = Array(...Array(7).keys()).map((i) =>
@@ -162,9 +162,10 @@ async function build() {
     readFile(path('src.js'), 'utf8'),
     readFile(path('shim.html'), 'utf8'),
   ]);
-  const { text, buf } = compressSource(source);
-  const html = buildHTML(text, shim);
+  const { uncompressed, compressed, buf } = compressSource(source);
+  const html = buildHTML(compressed, shim);
   await Promise.all([
+    writeFile(path('build', 'uncompressed.js'), uncompressed, 'utf8'),
     writeFile(path('build', 'demo.js'), buf),
     writeFile(path('build', 'demo.html'), html, 'utf8'),
   ]);
