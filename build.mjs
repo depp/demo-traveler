@@ -101,6 +101,52 @@ function compressSource(source) {
       toplevel: true,
     },
   });
+  // Strip top-level variable declarations.
+  // Any "let x = y;"" is replaced with "x = y;".
+  // Any "let x;" is deleted.
+  const stripvar = new terser.TreeTransformer(function before(node) {
+    if (node instanceof terser.AST_Toplevel) {
+      const body = [];
+      for (const node2 of node.body) {
+        if (node2 instanceof terser.AST_Definitions) {
+          for (const def of node2.definitions) {
+            const { name, value } = def;
+            if (value != null) {
+              if (!(name instanceof terser.AST_SymbolLet)) {
+                throw new Error('expected SymbolLet');
+              }
+              body.push(
+                new terser.AST_SimpleStatement({
+                  start: def.start,
+                  end: def.end,
+                  body: new terser.AST_Assign({
+                    start: def.start,
+                    end: def.end,
+                    left: new terser.AST_SymbolRef({
+                      start: name.start,
+                      end: name.end,
+                      name: name.name,
+                    }),
+                    right: value,
+                    operator: '=',
+                  }),
+                }),
+              );
+            }
+          }
+        } else {
+          body.push(node2);
+        }
+      }
+      node = new terser.AST_Toplevel(node);
+      node.body = body;
+      return node;
+    }
+  }, null);
+  code = terser
+    .parse(code, { ecma: 2018 })
+    .transform(stripvar)
+    .print_to_string();
   if (code.endsWith(';')) {
     code = code.substring(0, code.length - 1);
   }
