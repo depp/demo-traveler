@@ -1,3 +1,6 @@
+// Temporary variables.
+let i, x, y, t, d;
+
 // Timestamp of start of animation.
 let zeroTime = 0;
 
