@@ -1,5 +1,5 @@
 // Temporary variables.
-let i, x, y, z;
+let i, x, y;
 
 // Timestamp of start of animation.
 let zeroTime = 0;
@@ -16,12 +16,9 @@ let objects = Array(10)
           : [(x = y)],
       );
     }
-    z = 'M-50,0';
-    for (x = -50; x < 51; x++) {
-      z += 'L' + [x, y.shift()];
-    }
-    z += 'L50,50L-50,50z';
-    return new Path2D(z);
+    return new Path2D(
+      `M-50,50L${y.map((x, i) => [i - y.length / 2, x]).join('L')}L50,50z`,
+    );
   });
 
 // Function to generate colors. Uses x, y.
