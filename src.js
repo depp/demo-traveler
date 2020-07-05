@@ -18,9 +18,9 @@ let objects = Array(10)
     }
     t = 'M-50,0';
     for (x = -50; x < 51; x++) {
-      t += ' L' + [x, d.shift()];
+      t += 'L' + [x, d.shift()];
     }
-    t += ' L50,50 L-50,50 z';
+    t += 'L50,50L-50,50z';
     return new Path2D(t);
   });
 
