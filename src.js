@@ -1,6 +1,8 @@
-z = 0;
+// Timestamp of start of animation.
+let zeroTime = 0;
+
 // Generate 10 random mountain ranges.
-d = Array(10)
+let objects = Array(10)
   .fill()
   .map(() => {
     d = Array(3).fill(0);
@@ -32,7 +34,7 @@ d = Array(10)
 //     r(111, 0.7, 999) // black + 0.7 white
 //     r(911, 0.2, 555) // red + 0.2 gray
 //     r(911, 0.2, 555, 0.3, 119) // red + 0.2 gray, then + 0.3 blue
-r = (...b) => (
+let color = (...b) => (
   // y: color, initialized to 0.
   (y = [0, 0, 0]),
   // x: interpolation coefficient: 0 = previous color, 1 = next color.
@@ -45,23 +47,25 @@ r = (...b) => (
   `rgb(${y})`
 );
 
-f = (time) => {
+// Frame rendering callback.
+let render = (time) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
-  z = z || time;
-  time = ((time - z) / 5e3) % 1;
-  requestAnimationFrame(f);
-  c.fillStyle = r(111);
+  zeroTime = zeroTime || time;
+  time = ((time - zeroTime) / 5e3) % 1;
+  requestAnimationFrame(render);
+  c.fillStyle = color(111, time, 999);
   c.fillRect(-50, -50, 100, 100);
-  d.forEach((d, i) => {
+  objects.forEach((x, i) => {
     c.save();
     c.translate(0, -10 + 2 * i);
-    v = 25 * i;
-    c.fillStyle = r(223, i * 0.1, 452);
-    c.fill(d);
+    c.fillStyle = color(223, i * 0.1, 452);
+    c.fill(x);
     c.restore();
   });
   c.restore();
 };
-f();
+
+// Rendering callback will call requestAnimationFrame.
+render();
