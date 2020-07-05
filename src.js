@@ -25,7 +25,8 @@ f = (time) => {
   z = z || time;
   time = ((time - z) / 5e3) % 1;
   requestAnimationFrame(f);
-  c.fillStyle = `rgb(${time * 255},${time * 255},${time * 255})`;
+  s = (c) => 127 + 127 * Math.sin(6.3 * (time + c));
+  c.fillStyle = 'rgb(' + [s(0), s(0.3), s(0.6)] + ')';
   c.fillRect(-50, -50, 100, 100);
   d.forEach((d, i) => {
     c.save();
