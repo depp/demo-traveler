@@ -1,10 +1,23 @@
 z = 0;
-t = 'M-50,0';
-for (x = -50; x < 51; x++) {
-  t += ' L' + [x, Math.random() * 10];
-}
-t += ' L50,50 L-50,50 z';
-p = new Path2D(t);
+// Generate 10 random mountain ranges.
+d = Array(10)
+  .fill()
+  .map(() => {
+    d = Array(3).fill(0);
+    for (i = 0; i < 6; i++) {
+      x = d[0];
+      d = d.flatMap((y) => [
+        (x + y) / 2 + Math.random() * 10 * 0.6 ** i,
+        (x = y) + Math.random() * 10 * 0.6 ** i,
+      ]);
+    }
+    t = 'M-50,0';
+    for (x = -50; x < 51; x++) {
+      t += ' L' + [x, d.shift()];
+    }
+    t += ' L50,50 L-50,50 z';
+    return new Path2D(t);
+  });
 f = (time) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
@@ -14,8 +27,14 @@ f = (time) => {
   requestAnimationFrame(f);
   c.fillStyle = `rgb(${time * 255},${time * 255},${time * 255})`;
   c.fillRect(-50, -50, 100, 100);
-  c.fillStyle = '#060';
-  c.fill(p);
+  d.forEach((d, i) => {
+    c.save();
+    c.translate(0, -10 + 2 * i);
+    v = 25 * i;
+    c.fillStyle = `rgb(0,${v},0)`;
+    c.fill(d);
+    c.restore();
+  });
   c.restore();
 };
 f();
