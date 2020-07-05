@@ -1,5 +1,5 @@
 // Temporary variables.
-let i, x, y, t, d;
+let i, x, y, z;
 
 // Timestamp of start of animation.
 let zeroTime = 0;
@@ -8,23 +8,23 @@ let zeroTime = 0;
 let objects = Array(10)
   .fill()
   .map(() => {
-    d = Array(3).fill(0);
+    y = Array(3).fill(0);
     for (i = 0; i < 6; i++) {
-      x = d[0];
-      d = d.flatMap((y) => [
-        (x + y) / 2 + Math.random() * 10 * 0.6 ** i,
-        (x = y) + Math.random() * 10 * 0.6 ** i,
-      ]);
+      y = y.flatMap((y, j) =>
+        j
+          ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.5 ** i, (x = y)]
+          : [(x = y)],
+      );
     }
-    t = 'M-50,0';
+    z = 'M-50,0';
     for (x = -50; x < 51; x++) {
-      t += 'L' + [x, d.shift()];
+      z += 'L' + [x, y.shift()];
     }
-    t += 'L50,50L-50,50z';
-    return new Path2D(t);
+    z += 'L50,50L-50,50z';
+    return new Path2D(z);
   });
 
-// Function to generate colors.
+// Function to generate colors. Uses x, y.
 //
 // Colors are specified as RGB in decimal, with 111 black, 119 is blue, and 999
 // is white. After the first color, each next color is mixed in linearly, using
@@ -42,10 +42,10 @@ let color = (...b) => (
   (y = [0, 0, 0]),
   // x: interpolation coefficient: 0 = previous color, 1 = next color.
   (x = 1),
-  b.map((w, i) =>
+  b.map((z, i) =>
     i & 1
-      ? (x = w < 0 ? 0 : w > 1 ? 1 : w)
-      : (y = y.map((y, i) => y * (1 - x) + 32 * x * ((w + '')[i] - 1))),
+      ? (x = z < 0 ? 0 : z > 1 ? 1 : z)
+      : (y = y.map((y, i) => y * (1 - x) + 32 * x * ((z + '')[i] - 1))),
   ),
   `rgb(${y})`
 );
