@@ -13,9 +13,6 @@ import terser from 'terser';
 import WebSocket from 'ws';
 import yargs from 'yargs';
 
-// Title of the demo.
-const title = 'Traveler';
-
 // Maximum size of packed source.
 const sizeLimit = 1024;
 
@@ -71,7 +68,7 @@ function evalTemplate(template, variables) {
   });
 }
 
-function buildHTML(source, shim) {
+function buildHTML(source, shim, title) {
   return evalTemplate(
     shim,
     new Map([
@@ -94,13 +91,68 @@ function* runPacker(source, options) {
 }
 
 function compressSource(source) {
-  let { code } = terser.minify(source, {
-    ecma: 9,
+  let title = null;
+  const parseOpts = { ecma: 2018 };
+  const getTitle = new terser.TreeTransformer(function before(node) {
+    if (node instanceof terser.AST_Toplevel) {
+      const body = [];
+      for (let node2 of node.body) {
+        if (node2 instanceof terser.AST_Definitions) {
+          const definitions = [];
+          let changed = false;
+          for (const def of node2.definitions) {
+            const { name, value } = def;
+            if (
+              (name instanceof terser.AST_SymbolConst ||
+                name instanceof terser.AST_SymbolLet ||
+                name instanceof terser.AST_SymbolVar) &&
+              name.name == 'title'
+            ) {
+              if (title != null) {
+                throw new Error('Multiple titles');
+              }
+              if (!(value instanceof terser.AST_String)) {
+                throw new Error('Title is not string');
+              }
+              title = value.value;
+              changed = true;
+            } else {
+              definitions.push(def);
+            }
+          }
+          if (changed) {
+            if (definitions.length != 0) {
+              node2 = new terser.AST_Definitions({
+                start: node2.start,
+                end: node2.end,
+                definitions,
+              });
+            } else {
+              node2 = null;
+            }
+          }
+        }
+        if (node2 != null) {
+          body.push(node2);
+        }
+      }
+      return new terser.AST_Toplevel({
+        start: node.start,
+        end: node.end,
+        body,
+      });
+    }
+  });
+  let code = terser.parse(source, parseOpts).transform(getTitle);
+  if (title == null) {
+    throw new Error('No title defined');
+  }
+  ({ code } = terser.minify(code, {
     compress: true,
     mangle: {
       toplevel: true,
     },
-  });
+  }));
   // Strip top-level variable declarations.
   // Any "let x = y;"" is replaced with "x = y;".
   // Any "let x;" is deleted.
@@ -151,13 +203,13 @@ function compressSource(source) {
     code = code.substring(0, code.length - 1);
   }
   let best = null;
-  for (const { compressed, uncompressed } of runPacker(code, {})) {
-    const buf = Buffer.from(compressed, 'utf8');
+  for (const packed of runPacker(code, {})) {
+    const buf = Buffer.from(packed.compressed, 'utf8');
     if (best == null || buf.length < best.buf.length) {
-      best = { buf, compressed, uncompressed };
+      best = { buf, ...packed };
     }
   }
-  return best;
+  return { title, ...best };
 }
 
 function printStats(result) {
@@ -184,8 +236,8 @@ async function build() {
     readFile(path('src.js'), 'utf8'),
     readFile(path('shim.html'), 'utf8'),
   ]);
-  const { uncompressed, compressed, buf } = compressSource(source);
-  const html = buildHTML(compressed, shim);
+  const { title, uncompressed, compressed, buf } = compressSource(source);
+  const html = buildHTML(compressed, shim, title);
   await Promise.all([
     writeFile(path('build', 'uncompressed.js'), uncompressed, 'utf8'),
     writeFile(path('build', 'demo.js'), buf),

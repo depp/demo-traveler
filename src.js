@@ -1,3 +1,8 @@
+// Demo title. This is stripped out of the demo by the build system, but it is
+// present in the shim.
+/* exported title */
+var title = 'Star Traveler';
+
 // Temporary variables.
 let x, y;
 

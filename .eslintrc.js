@@ -20,7 +20,6 @@ module.exports = {
         b: 'readonly',
         c: 'readonly',
         d: 'readonly',
-        title: 'readonly',
       },
     },
     {
