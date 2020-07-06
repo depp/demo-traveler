@@ -91,8 +91,9 @@ function* runPacker(source, options) {
 }
 
 function compressSource(source) {
-  let title = null;
   const parseOpts = { ecma: 2018 };
+  // Extract the title from the source code.
+  let title = null;
   const getTitle = new terser.TreeTransformer(function before(node) {
     if (node instanceof terser.AST_Toplevel) {
       const body = [];
@@ -147,6 +148,7 @@ function compressSource(source) {
   if (title == null) {
     throw new Error('No title defined');
   }
+  // Minify.
   ({ code } = terser.minify(code, {
     compress: true,
     mangle: {
@@ -199,9 +201,11 @@ function compressSource(source) {
     .parse(code, { ecma: 2018 })
     .transform(stripvar)
     .print_to_string();
+  // Remove trailing semicolon from output.
   if (code.endsWith(';')) {
     code = code.substring(0, code.length - 1);
   }
+  // Run RegPack and pick smallest output.
   let best = null;
   for (const packed of runPacker(code, {})) {
     const buf = Buffer.from(packed.compressed, 'utf8');
