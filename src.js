@@ -1,25 +1,35 @@
 // Temporary variables.
-let i, x, y;
+let x, y;
 
 // Timestamp of start of animation.
 let zeroTime = 0;
 
+let iter = (i, x) => [...Array(i).keys()].map(x);
+
 // Generate 10 random mountain ranges.
-let objects = Array(10)
-  .fill()
-  .map(() => {
-    y = Array(3).fill(0);
-    for (i = 0; i < 6; i++) {
-      y = y.flatMap((y, j) =>
+let functions = [];
+iter(10, (i) => {
+  y = Array(3).fill(0);
+  iter(
+    6,
+    (i) =>
+      (y = y.flatMap((y, j) =>
         j
-          ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.5 ** i, (x = y)]
+          ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.51 ** i, (x = y)]
           : [(x = y)],
-      );
-    }
-    return new Path2D(
-      `M-50,50L${y.map((x, i) => [i - y.length / 2, x]).join('L')}L50,50z`,
-    );
+      )),
+  );
+  let p = new Path2D(
+    `M-50,50L${y.map((x, i) => [i - y.length / 2, x]).join('L')}L50,50z`,
+  );
+  functions.push((time) => {
+    c.translate(0, -20);
+    c.scale((x = 30 / (30 - 2 * i - time * 8)), x);
+    c.translate(0, 10);
+    c.fillStyle = color(223, i * 0.1, 452);
+    c.fill(p);
   });
+});
 
 // Function to generate colors. Uses x, y.
 //
@@ -55,15 +65,9 @@ let render = (time) => {
   zeroTime = zeroTime || time;
   time = ((time - zeroTime) / 5e3) % 1;
   requestAnimationFrame(render);
-  c.fillStyle = color(111, time, 999);
+  c.fillStyle = color(555);
   c.fillRect(-50, -50, 100, 100);
-  objects.forEach((x, i) => {
-    c.save();
-    c.translate(0, -10 + 2 * i);
-    c.fillStyle = color(223, i * 0.1, 452);
-    c.fill(x);
-    c.restore();
-  });
+  functions.map((x) => (c.save(), x(time), c.restore()));
   c.restore();
 };
 
