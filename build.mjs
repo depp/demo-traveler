@@ -243,7 +243,7 @@ async function buildCommand(args) {
   }
 }
 
-function watchCommand(args) {
+function watchCommand() {
   return watch((result, e) => {
     if (e != null) {
       console.error(e);
@@ -382,7 +382,7 @@ async function main() {
     const [cmdName, ...cmdArgs] = args;
     const cmdFunc = commands.get(cmdName);
     if (cmdFunc == null) {
-      die(`Unknown command: ${JSON.stringify(cmd)}`);
+      die(`Unknown command: ${JSON.stringify(cmdName)}`);
     }
     await mkdirExistOk(path('build'));
     await cmdFunc(cmdArgs);

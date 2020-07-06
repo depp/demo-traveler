@@ -1,21 +1,49 @@
 module.exports = {
-  parserOptions: {
-    ecmaVersion: 8,
-    sourceType: 'script',
-  },
-  env: {
-    browser: true,
-    es2017: true,
-  },
+  extends: 'eslint:recommended',
   rules: {
-    'no-unused-vars': 'error',
-    'no-undef': 'error',
+    'no-constant-condition': ['error', { checkLoops: false }],
   },
-  globals: {
-    a: 'readonly',
-    b: 'readonly',
-    c: 'readonly',
-    d: 'readonly',
-    title: 'readonly',
-  },
+  ignorePatterns: ['.*.js'],
+  overrides: [
+    {
+      files: ['src.js'],
+      parserOptions: {
+        ecmaVersion: 2017, // Power x**y, and trailing commas in calls.
+        sourceType: 'script',
+      },
+      env: {
+        browser: true,
+        es2017: true,
+      },
+      globals: {
+        a: 'readonly',
+        b: 'readonly',
+        c: 'readonly',
+        d: 'readonly',
+        title: 'readonly',
+      },
+    },
+    {
+      files: ['record.js', 'reload.js'],
+      parserOptions: {
+        ecmaVersion: 2017, // Power x**y, and trailing commas in calls.
+        sourceType: 'module',
+      },
+      env: {
+        browser: true,
+        es2017: true,
+      },
+    },
+    {
+      files: ['build.mjs'],
+      parserOptions: {
+        ecmaVersion: 2020, // import.meta
+        sourceType: 'module',
+      },
+      env: {
+        es2017: true,
+        node: true,
+      },
+    },
+  ],
 };

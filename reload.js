@@ -27,15 +27,15 @@ ws.addEventListener('open', wsOpen);
 ws.addEventListener('close', wsClose);
 ws.addEventListener('message', wsMessage);
 
-function wsError(ev) {
+function wsError() {
   setStatus('error', 'Disconnected');
 }
 
-function wsOpen(ev) {
+function wsOpen() {
   setStatus('working', 'Connected');
 }
 
-function wsClose(ev) {
+function wsClose() {
   setStatus('error', 'Disconnected');
 }
 
