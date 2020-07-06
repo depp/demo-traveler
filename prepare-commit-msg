@@ -1,7 +1,16 @@
 #!/bin/sh
 COMMIT_MSG_FILE=$1
-size=$(node build.mjs build --quiet --print-size)
-if test $? -ne 0 ; then
-    size=
+need_rebuild=
+for dep in build.mjs src.js ; do
+  if ! test build/demo.js -nt "${dep}" ; then
+    need_rebuild=1
+    break
+  fi
+done
+if test "${need_rebuild}" ; then
+  size=$(node build.mjs build --quiet --print-size)
+else
+  set $(wc -c build/demo.js)
+  size=$1
 fi
 git interpret-trailers --trim-empty --in-place --trailer "Size: ${size}" "${COMMIT_MSG_FILE}"
