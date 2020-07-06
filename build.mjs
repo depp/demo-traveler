@@ -160,57 +160,22 @@ function compressSource(source) {
   return best;
 }
 
-const barBlocks = Array(...Array(7).keys()).map((i) =>
-  String.fromCodePoint(0x2589 + 6 - i),
-);
-
-function makeBar(frac) {
-  const columns = Math.max(10, process.stderr.columns || 80) - 2;
-  const bwidth = Math.min(
-    columns * 8,
-    Math.max(0, Math.round(frac * columns * 8)),
-  );
-  const fullBlocks = bwidth >> 3;
-  const fracBlock = bwidth & 7;
-  let t = '';
-  t += '\u250c';
-  for (let j = 0; j < columns; j++) {
-    t += '\u2500';
-  }
-  t += '\u2510\n\u2502';
-  let i = 0;
-  for (; i < fullBlocks; i++) {
-    t += '\u2588';
-  }
-  if (fracBlock != 0) {
-    t += barBlocks[fracBlock - 1];
-    i++;
-  }
-  for (; i < columns; i++) {
-    t += ' ';
-  }
-  t += '\u2502\n\u2514';
-  for (let j = 0; j < columns; j++) {
-    t += '\u2500';
-  }
-  t += '\u2518\n';
-  return t;
-}
-
 function printStats(result) {
   const { source } = result;
   const size = source.length;
   process.stderr.write(`Size: ${size} bytes\n`);
   if (size > sizeLimit) {
     const frac = (size - sizeLimit) / sizeLimit;
-    process.stderr.write(chalk.red.bgWhiteBright(makeBar(frac)));
     process.stderr.write(
-      chalk.redBright(`Over limit by: ${(100 * frac).toFixed(1)}%\n`),
+      chalk.redBright('Over limit.') +
+        ` Over by: ${(100 * frac).toFixed(1)}%\n`,
     );
   } else {
     const frac = (sizeLimit - size) / sizeLimit;
-    process.stderr.write(chalk.greenBright.bgBlue(makeBar(frac)));
-    process.stderr.write(`Space remaining: ${(100 * frac).toFixed(1)}%\n`);
+    process.stderr.write(
+      chalk.greenBright('Under limit.') +
+        ` Space remaining: ${(100 * frac).toFixed(1)}%\n`,
+    );
   }
 }
 
