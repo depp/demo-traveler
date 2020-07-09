@@ -14,7 +14,7 @@ let iter = (i, x) => [...Array(i).keys()].map(x);
 // Generate 10 random mountain ranges.
 let functions = [];
 iter(10, (i) => {
-  y = Array(3).fill(0);
+  y = iter(i, (_) => 0);
   iter(
     6,
     (i) =>

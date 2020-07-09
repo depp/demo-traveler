@@ -11,6 +11,9 @@ module.exports = {
         ecmaVersion: 2017, // Power x**y, and trailing commas in calls.
         sourceType: 'script',
       },
+      rules: {
+        'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+      },
       env: {
         browser: true,
         es2017: true,
