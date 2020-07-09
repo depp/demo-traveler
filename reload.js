@@ -87,5 +87,6 @@ function statusMessage(msg) {
 }
 
 function changedMessage() {
+  console.clear();
   frameElt.contentWindow.location.reload();
 }
