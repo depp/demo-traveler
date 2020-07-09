@@ -9,6 +9,7 @@ let x, y;
 // Timestamp of start of animation.
 let zeroTime = 0;
 
+// Return an array 'a' with size 'i', where a[j] = x(j).
 let iter = (i, x) => [...Array(i).keys()].map(x);
 
 // Generate 10 random mountain ranges.
