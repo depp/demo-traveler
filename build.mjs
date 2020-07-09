@@ -295,7 +295,7 @@ async function buildCommand(args) {
     process.stdout.write(`${result.source.length}\n`);
   }
   if (!quiet) {
-    printStats(await build());
+    printStats(result);
   }
 }
 
