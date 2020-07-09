@@ -22,7 +22,7 @@ let perspective = (x, y, z) =>
   z > 1 && (c.scale((z = 9 / z), z), c.translate(x, y), 1);
 
 // Generate 10 random mountain ranges.
-let functions = iter(20, (i, p) => {
+let functions = iter(30, (i, p) => {
   y = iter(8, (_) => 0);
   iter(
     6,
@@ -36,8 +36,11 @@ let functions = iter(20, (i, p) => {
   x = y.length / 2;
   p = new Path2D(`M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`);
   return (time) => {
+    // Z coordinate.
+    x = 60 - 2 * i - time * 20;
     c.translate(0, -20);
-    if (perspective(0, 10, (x = 40 - 2 * i - time * 15))) {
+    // The x*x/40 is a planetary curvature factor.
+    if (perspective(0, 10 + (x * x) / 40, x)) {
       c.translate(0, 10);
       c.fillStyle = color(452, (x / 40) ** 0.3, 223);
       c.fill(p);
