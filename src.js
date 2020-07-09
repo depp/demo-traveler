@@ -12,9 +12,18 @@ let zeroTime = 0;
 // Return an array 'a' with size 'i', where a[j] = x(j).
 let iter = (i, x) => [...Array(i).keys()].map(x);
 
+// Apply a perspective transformation to the canvas. This will make the
+// transformation for an object located at (x,y,z). X is right, Y is down, and Z
+// is forward. Returns true if the object should be drawn, otherwise the object
+// is clipped and should not be drawn.
+//
+// The front clipping plane is Z=1.
+let perspective = (x, y, z) =>
+  z > 1 && (c.scale((z = 9 / z), z), c.translate(x, y), 1);
+
 // Generate 10 random mountain ranges.
-let functions = iter(10, (i, p) => {
-  y = iter(i, (_) => 0);
+let functions = iter(20, (i, p) => {
+  y = iter(8, (_) => 0);
   iter(
     6,
     (i) =>
@@ -24,15 +33,15 @@ let functions = iter(10, (i, p) => {
           : [(x = y)],
       )),
   );
-  p = new Path2D(
-    `M-50,50L${y.map((x, i) => [i - y.length / 2, x]).join('L')}L50,50z`,
-  );
+  x = y.length / 2;
+  p = new Path2D(`M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`);
   return (time) => {
     c.translate(0, -20);
-    c.scale((x = 30 / (30 - 2 * i - time * 8)), x);
-    c.translate(0, 10);
-    c.fillStyle = color(223, i * 0.1, 452);
-    c.fill(p);
+    if (perspective(0, 10, (x = 40 - 2 * i - time * 15))) {
+      c.translate(0, 10);
+      c.fillStyle = color(452, (x / 40) ** 0.3, 223);
+      c.fill(p);
+    }
   };
 });
 
