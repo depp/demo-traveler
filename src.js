@@ -12,8 +12,7 @@ let zeroTime = 0;
 let iter = (i, x) => [...Array(i).keys()].map(x);
 
 // Generate 10 random mountain ranges.
-let functions = [];
-iter(10, (i) => {
+let functions = iter(10, (i, p) => {
   y = iter(i, (_) => 0);
   iter(
     6,
@@ -24,16 +23,16 @@ iter(10, (i) => {
           : [(x = y)],
       )),
   );
-  let p = new Path2D(
+  p = new Path2D(
     `M-50,50L${y.map((x, i) => [i - y.length / 2, x]).join('L')}L50,50z`,
   );
-  functions.push((time) => {
+  return (time) => {
     c.translate(0, -20);
     c.scale((x = 30 / (30 - 2 * i - time * 8)), x);
     c.translate(0, 10);
     c.fillStyle = color(223, i * 0.1, 452);
     c.fill(p);
-  });
+  };
 });
 
 // Function to generate colors. Uses x, y.
