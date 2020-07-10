@@ -29,17 +29,15 @@ let fractal = (x, y, i, z) =>
 let functions = [
   iter(4e3, (i, u, v, w, y) => {
     i = 4 - i / 1e3;
-    u = Math.random() - 0.5;
-    v = Math.random() - 0.5;
-    w = Math.random() * 0.5 + 0.5;
+    [u, v, w] = iter(3, (_) => Math.random() - 0.5);
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
       z = i - smooth2(5, 9) / 3;
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(4, 24) - 1));
         c.scale(
-          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
-          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
+          (w + 1) * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
+          (w + 1) * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
         );
         color(z * z, y, 111);
         c.fill(star);
