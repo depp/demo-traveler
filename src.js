@@ -28,6 +28,12 @@ let star = new Path2D(
   'M-1,0A1,1,0,0,0,0,-1A1,1,0,0,0,1,0A1,1,0,0,0,0,1A1,1,0,0,0,-1,0',
 );
 
+let fractal = (x, y, i, z) =>
+  i--
+    ? ((z = (x + y) / 2 + ((Math.random() - 0.5) * (i < 5) * 2 ** i) / 2),
+      [fractal(x, z, i), fractal(z, y, i)].flat())
+    : [x];
+
 // Generate 10 random mountain ranges.
 let functions = [
   iter(4e3, (i, u, v, w, y) => {
@@ -53,27 +59,15 @@ let functions = [
     };
   }),
   iter(30, (i, p) => {
-    y = iter(8, (_) => 0);
-    iter(
-      6,
-      (i) =>
-        (y = y.flatMap((y, j) =>
-          j
-            ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.51 ** i, (x = y)]
-            : [(x = y)],
-        )),
-    );
-    x = y.length / 2;
-    p = new Path2D(
-      `M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`,
-    );
+    y = fractal(0, 0, 9);
+    p = new Path2D(`M0,50L${y.map((y, i) => [i, y]).join('L')}L500,50z`);
     return (_) => {
       c.translate(0, 40 * smooth(4) - 20);
       // Z coordinate.
       x = 60 - 2 * i - time * 20;
       // The x*x/40 is a planetary curvature factor.
       if (perspective(0, 10 + (x * x) / 40, x)) {
-        c.translate(0, 10);
+        c.translate(-250, 10);
         color(452, (x / 40) ** 0.3, 223);
         c.fill(p);
       }
