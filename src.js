@@ -142,7 +142,7 @@ let render = (t) => {
   functions.map((x) => (c.save(), x(), c.restore()));
   color(0, 145);
   c.beginPath();
-  c.arc(0, 0, 0.02 / (1 - time), 0, 2 * Math.PI);
+  c.arc(0, 0, 0.02 / (1 - time), 0, 7);
   c.fill();
   c.restore();
 };
