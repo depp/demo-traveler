@@ -32,7 +32,7 @@ let functions = [
     u = Math.random() - 0.5;
     v = Math.random() - 0.5;
     w = Math.random() * 0.5 + 0.5;
-    y = iter(3, (_) => 1 + 8 * Math.random());
+    y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
       z = i - smooth2(5, 9) / 3;
       if (z > 1e-3 && z < 1) {
@@ -41,10 +41,10 @@ let functions = [
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
         );
-        color(y, z * z, 111);
+        color(z * z, y, 111);
         c.fill(star);
         c.scale(0.5, 0.5);
-        color(999, z * z, 111);
+        color(z * z, 999, 111);
         c.fill(star);
       }
     };
@@ -52,25 +52,38 @@ let functions = [
   iter(80, (i, p) => {
     x = (i & 1) * Math.random() * 20;
     y = fractal(0, 0, 10);
-    p = new Path2D(`M0,50L${y.map((y, i) => [i, x + y]).join('L')}L500,50z`);
+    p = new Path2D(`M0,99L${y.map((y, i) => [i, x + y]).join('L')}L500,99z`);
     return (_) => {
       // Camera movement.
       c.translate(0, 40 * smooth(4, 24) - 20);
       // Z coordinate.
-      x = 80 - i - time * 40;
-      if (x > 1) {
-        c.scale(9 / x, 9 / x);
+      z = 80 - i - time * 40;
+      if (z > 1) {
+        c.scale(9 / z, 9 / z);
         // The x*x/30 is a planetary curvature factor.
-        c.translate(-700, 20 + (x * x) / 30);
+        c.translate(-700, 20 + (z * z) / 30);
         if (i & 1) {
-          // Closest cloud is at x==11 or so, farthest at x=40 or so
-          // 0.7 ..
-          color(223, (x / 50 - 0.2) * 1, 445);
+          // Closest cloud is at z=11 or so, farthest at z=50 or so.
+          z /= 50;
+          color(
+            time * 5,
+            // color(z, 137, 346), // clear day
+            color(z, 889, 346), // cloudy day
+            color(z, 222, 815, 933), // sunset
+            color(z, 112, 334), // night
+          );
           c.globalAlpha = 1 - smooth(1.5 + i / 60, 8);
           c.translate(time * 800, -25);
           c.scale(2, -1);
         } else {
-          color(452, x ** 0.3 / 3, 223);
+          // Mountains go from x=5..25
+          color(z / 20, 121, color(time * 4, 346, 534, 223, 111));
+          // COLORS:
+          // - desert brown (night): 443 -> 223
+          // - lunar surface (night): 444 -> 222
+          // - forest (day): 121 -> 346
+          // - forest (?): 121 445
+          // - sunset: -> 445
         }
         c.fill(p);
       }
@@ -78,33 +91,31 @@ let functions = [
   }),
 ].flat();
 
-// Function to generate colors. Uses x, y. Assigns result to fillStyle.
+// Function to generate colors. Uses x, y. Assigns result to fillStyle and
+// returns it as an array of RGB values in the range 0..255.
 //
-// Colors are specified as RGB in decimal, with 111 black, 119 is blue, and 999
-// is white. After the first color, each next color is mixed in linearly, using
-// an interpolation coefficient that comes before the color. Colors can either
-// be arrays or integers, so 123 is the same as [1,2,3].
+// This function generates a color from a linear gradient. The first parameter
+// is the position along the gradient from 0 to 1, the remaining parameters are
+// colors. The gradient is specified as a list of colors, which can either be
+// [R,G,B] arrays with values in the range 0-255, or can be three-digit numbers
+// with one digit for each channel. The digits may range from 1 to 9 (0 is not
+// used).
 //
-// For example,
+// For example, the color black is either 111 or [0,0,0]. White is 999 or
+// [255,255,255]. Red is 911 or [255,0,0].
 //
-//     r(111) // black
-//     r(999) // white
-//     r(111, 0.7, 999) // black + 0.7 white
-//     r(911, 0.2, 555) // red + 0.2 gray
-//     r(911, 0.2, 555, 0.3, 119) // red + 0.2 gray, then + 0.3 blue
-let color = (...b) => (
-  // y: color, initialized to 0.
-  (y = [0, 0, 0]),
-  // x: interpolation coefficient: 0 = previous color, 1 = next color.
-  (x = 1),
-  b.map((z, i) =>
-    i & 1
-      ? (x = z < 0 ? 0 : z > 1 ? 1 : z)
-      : (y = y.map(
-          (y, i) => y * (1 - x) + x * 32 * ((z == +z ? z + '' : z)[i] - 1),
-        )),
-  ),
-  (c.fillStyle = `rgb(${y})`)
+// Usage examples:
+//
+//     color(x, 111, 999); // Gradient, x=0 is black, x=1 is white.
+//     color(x, 911, 191, 119); // x=0 is red, x=0.5 is green, x=1 is blue
+//     color(x, 111, color(y, 911, 119)); // Double gradient
+let color = (a, ...b) => (
+  ([x, y] = [...b.slice((a *= b.length - 1)), (x = b.pop()), x].map((y) =>
+    y == +y ? [...('' + y)].map((y) => 32 * y - 32) : y,
+  )),
+  (y = iter(3, (i) => (1 - (a % 1)) * x[i] + (a % 1) * y[i])),
+  (c.fillStyle = `rgb(${y})`),
+  y
 );
 
 // Smooth step function. Starts with value 0, changes smoothly to value 1. Takes
@@ -127,7 +138,7 @@ let render = (t) => {
   zeroTime = zeroTime || t;
   time = ((t - zeroTime) / 2e4) % 1;
   requestAnimationFrame(render);
-  color(111);
+  color(0, 111);
   c.fillRect(-50, -50, 100, 100);
   functions.map((x) => (c.save(), x(), c.restore()));
   c.restore();
