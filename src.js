@@ -33,9 +33,9 @@ let functions = [
     w = w / 4 + 0.5;
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
-      z = i - (time < 0.8 ? smooth(7.2, 9) : 9 * time - 6.7);
+      z = i - (time < 0.8 ? smooth(7.2, 4) : 9 * time - 6.7);
       if (z > 1e-3 && z < 1) {
-        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 24) - 1));
+        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 9) - 1));
         c.scale(
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
@@ -53,7 +53,7 @@ let functions = [
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
     return (x) => {
       // Camera movement.
-      c.translate(0, 40 * smooth(6, 24) - 220 + 200 * smooth(0, 24));
+      c.translate(0, 40 * smooth(6, 9) - 220 + 200 * smooth(0, 9));
       // Z coordinate.
       z = 2 - i / 25 - time * 2;
       if (z > 0.02) {
@@ -85,7 +85,7 @@ let functions = [
           color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
         );
-        c.globalAlpha = 1 - smooth(3.5 + i / 60, 8);
+        c.globalAlpha = 1 - smooth(3.5 + i / 60, 4);
         c.translate(time * 800, -25);
         c.scale(2, -1);
         c.fill(p);
@@ -127,7 +127,7 @@ let color = (a, ...b) => (
 // transition starts slightly before the given time and finishes slightly after.
 //
 // For example, smooth(4, 24) changes from 0 to 1 at t=4/9.
-let smooth = (x, y) => 1 / (1 + Math.exp(y * 4 * (x / 9 - time)));
+let smooth = (x, y) => 1 / (1 + 3 ** (y * (x - time * 9)));
 
 // Frame rendering callback.
 let render = (t) => {
