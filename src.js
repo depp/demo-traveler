@@ -50,9 +50,8 @@ let functions = [
     };
   }),
   iter(80, (i, p) => {
-    x = (i & 1) * Math.random() * 20;
     y = fractal(0, 0, 10);
-    p = new Path2D(`M0,99L${y.map((y, i) => [i, x + y]).join('L')}L500,99z`);
+    p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
     return (_) => {
       // Camera movement.
       c.translate(0, 40 * smooth(4, 24) - 20);
