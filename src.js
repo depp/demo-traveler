@@ -31,15 +31,15 @@ let star = new Path2D(
 // Generate 10 random mountain ranges.
 let functions = [
   iter(4e3, (i, u, v, w, y) => {
-    i = 2 - i / 2e3;
+    i = 4 - i / 1e3;
     u = Math.random() - 0.5;
     v = Math.random() - 0.5;
     w = Math.random() * 0.5 + 0.5;
     y = iter(3, (_) => 1 + 8 * Math.random());
     return (_) => {
-      z = i; //  - time;
+      z = i - smooth2(4.5) / 7;
       if (z > 1e-3 && z < 1) {
-        c.translate((u * 99) / z, (v * 99) / z);
+        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(4) - 1));
         c.scale(
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
@@ -68,6 +68,7 @@ let functions = [
       `M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`,
     );
     return (_) => {
+      c.translate(0, 40 * smooth(4) - 20);
       // Z coordinate.
       x = 60 - 2 * i - time * 20;
       // The x*x/40 is a planetary curvature factor.
@@ -114,7 +115,8 @@ let color = (...b) => (
 // transition starts slightly before the given time and finishes slightly after.
 //
 // For example, smooth(4) changes from 0 to 1 at t=4/9.
-let smooth = (x) => 1 / (1 + 0.1 ** (9 * time - x));
+let smooth = (x) => 1 / (1 + Math.exp(96 * (x / 9 - time)));
+let smooth2 = (x) => (x / 9 - time < 0 ? 0.5 - 24 * (x / 9 - time) : smooth(x));
 
 // Frame rendering callback.
 let render = (t) => {
@@ -122,11 +124,10 @@ let render = (t) => {
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
   zeroTime = zeroTime || t;
-  time = ((t - zeroTime) / 5e3) % 1;
+  time = ((t - zeroTime) / 1e4) % 1;
   requestAnimationFrame(render);
   color(111);
   c.fillRect(-50, -50, 100, 100);
-  c.translate(0, 20 * smooth(4) - 20);
   functions.map((x) => (c.save(), x(), c.restore()));
   c.restore();
 };
