@@ -26,8 +26,11 @@ let star = new Path2D('M-1,0L0,1L1,0L0,-1z');
 // Generate 10 random mountain ranges.
 let functions = [
   iter(1000, (i, x, y) => {
-    x = (Math.random() - 0.5) * 1000;
-    y = (Math.random() - 0.5) * 1000;
+    // Box-Muller transform.
+    x = Math.sqrt(-2 * Math.log(Math.random())) * 2e3;
+    // Why 44? Because it's close to a multiple of 2pi.
+    y = 44 * Math.random();
+    [x, y] = [x * Math.sin(y), x * Math.cos(y)];
     return (time) => {
       z = 200 - 0.2 * i - time * 20;
       if (z > 1) {
