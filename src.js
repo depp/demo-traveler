@@ -21,7 +21,9 @@ let iter = (i, x) => [...Array(i).keys()].map(x);
 let perspective = (x, y, z) =>
   z > 1 && (c.scale((z = 9 / z), z), c.translate(x, y), 1);
 
-let star = new Path2D('M-1,0L0,1L1,0L0,-1z');
+let star = new Path2D(
+  'M-1,0A1,1,0,0,0,0,-1A1,1,0,0,0,1,0A1,1,0,0,0,0,1A1,1,0,0,0,-1,0',
+);
 
 // Generate 10 random mountain ranges.
 let functions = [
