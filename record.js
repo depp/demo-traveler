@@ -28,7 +28,7 @@ window.requestAnimationFrame = function requestAnimationFrame(callback) {
   function handler(time) {
     if (WSCapture.beginFrame()) {
       time = WSCapture.currentTimeMS(time);
-      if (time >= 5000) {
+      if (time >= 10000) {
         WSCapture.stopRecording();
         return;
       }
