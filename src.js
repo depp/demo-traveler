@@ -52,21 +52,20 @@ let functions = [
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
     return (x) => {
-      x = 2 - 2 * smooth(0, 24);
       // Camera movement.
-      c.translate(0, 40 * smooth(6, 24) - 20 - 100 * x);
+      c.translate(0, 40 * smooth(6, 24) - 220 + 200 * smooth(0, 24));
       // Z coordinate.
-      z = 120 - 2 * i - time * 80;
-      if (z > 1) {
-        c.scale(9 / z, 9 / z);
-        // The x*x/30 is a planetary curvature factor.
-        c.translate(-700, 20 + (z * z) / 30);
+      z = 2 - i / 25 - time * 2;
+      if (z > 0.02) {
+        c.scale(0.2 / z, 0.2 / z);
+        // The x*x*80 is a planetary curvature factor.
+        c.translate(-700, 20 + z * z * 80);
 
         // Mountains
         // Mountains go from x=5..25
         color(
           x,
-          color(z / 20, 121, color(time * 9 - 2, 346, 534, 223, 111)),
+          color(z * 2, 121, color(time * 9 - 2, 346, 534, 223, 111)),
           145,
         );
         // COLORS:
@@ -79,15 +78,14 @@ let functions = [
 
         // Clouds
         // Closest cloud is at z=11 or so, farthest at z=50 or so.
-        z /= 50;
         color(
           time * 6 - 1,
           // color(z, 137, 346), // clear day
           color(z, 889, 346), // cloudy day
           color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
-        ),
-          (c.globalAlpha = 1 - smooth(3.5 + i / 60, 8));
+        );
+        c.globalAlpha = 1 - smooth(3.5 + i / 60, 8);
         c.translate(time * 800, -25);
         c.scale(2, -1);
         c.fill(p);
