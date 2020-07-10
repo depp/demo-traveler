@@ -41,10 +41,10 @@ let functions = [
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
         );
-        c.fillStyle = color(y, z * z, 111);
+        color(y, z * z, 111);
         c.fill(star);
         c.scale(0.5, 0.5);
-        c.fillStyle = color(999, z * z, 111);
+        color(999, z * z, 111);
         c.fill(star);
       }
     };
@@ -71,14 +71,14 @@ let functions = [
       // The x*x/40 is a planetary curvature factor.
       if (perspective(0, 10 + (x * x) / 40, x)) {
         c.translate(0, 10);
-        c.fillStyle = color(452, (x / 40) ** 0.3, 223);
+        color(452, (x / 40) ** 0.3, 223);
         c.fill(p);
       }
     };
   }),
 ].flat();
 
-// Function to generate colors. Uses x, y.
+// Function to generate colors. Uses x, y. Assigns result to fillStyle.
 //
 // Colors are specified as RGB in decimal, with 111 black, 119 is blue, and 999
 // is white. After the first color, each next color is mixed in linearly, using
@@ -104,7 +104,7 @@ let color = (...b) => (
           (y, i) => y * (1 - x) + x * 32 * ((z == +z ? z + '' : z)[i] - 1),
         )),
   ),
-  `rgb(${y})`
+  (c.fillStyle = `rgb(${y})`)
 );
 
 // Frame rendering callback.
@@ -115,7 +115,7 @@ let render = (time) => {
   zeroTime = zeroTime || time;
   time = ((time - zeroTime) / 5e4) % 1;
   requestAnimationFrame(render);
-  c.fillStyle = color(111);
+  color(111);
   c.fillRect(-50, -50, 100, 100);
   functions.map((x) => (c.save(), x(time), c.restore()));
   c.restore();
