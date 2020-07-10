@@ -51,9 +51,10 @@ let functions = [
   iter(60, (i, p) => {
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
-    return (_) => {
+    return (x) => {
+      x = 2 - 2 * smooth(0, 24);
       // Camera movement.
-      c.translate(0, 40 * smooth(6, 24) - 20);
+      c.translate(0, 40 * smooth(6, 24) - 20 - 100 * x);
       // Z coordinate.
       z = 120 - 2 * i - time * 80;
       if (z > 1) {
@@ -63,7 +64,11 @@ let functions = [
 
         // Mountains
         // Mountains go from x=5..25
-        color(z / 20, 121, color(time * 9 - 0.6, 346, 534, 223, 111));
+        color(
+          x,
+          color(z / 20, 121, color(time * 9 - 2, 346, 534, 223, 111)),
+          145,
+        );
         // COLORS:
         // - desert brown (night): 443 -> 223
         // - lunar surface (night): 444 -> 222
@@ -76,13 +81,13 @@ let functions = [
         // Closest cloud is at z=11 or so, farthest at z=50 or so.
         z /= 50;
         color(
-          time * 4 - 0.2,
+          time * 6 - 1,
           // color(z, 137, 346), // clear day
           color(z, 889, 346), // cloudy day
           color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
-        );
-        c.globalAlpha = 1 - smooth(3.5 + i / 60, 8);
+        ),
+          (c.globalAlpha = 1 - smooth(3.5 + i / 60, 8));
         c.translate(time * 800, -25);
         c.scale(2, -1);
         c.fill(p);
@@ -109,6 +114,7 @@ let functions = [
 //     color(x, 911, 191, 119); // x=0 is red, x=1 is green, x=2 is blue
 //     color(x, 111, color(y, 911, 119)); // Double gradient
 let color = (a, ...b) => (
+  (a *= a > 0),
   ([x, y] = [...b.slice(a), (x = b.pop()), x].map((y) =>
     y == +y ? [...('' + y)].map((y) => 32 * y - 32) : y,
   )),
@@ -130,12 +136,16 @@ let render = (t) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
-  zeroTime = zeroTime || t;
+  zeroTime = zeroTime || t - 2e3;
   time = ((t - zeroTime) / 3e4) % 1;
   requestAnimationFrame(render);
   color(0, 111);
   c.fillRect(-50, -50, 100, 100);
   functions.map((x) => (c.save(), x(), c.restore()));
+  color(0, 145);
+  c.beginPath();
+  c.arc(0, 0, 0.02 / (1 - time), 0, 2 * Math.PI);
+  c.fill();
   c.restore();
 };
 
