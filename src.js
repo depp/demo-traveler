@@ -33,9 +33,9 @@ let functions = [
     w = w / 4 + 0.5;
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
-      z = i - smooth2(5, 9) / 3;
+      z = i - smooth2(7, 9);
       if (z > 1e-3 && z < 1) {
-        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(4, 24) - 1));
+        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 24) - 1));
         c.scale(
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
@@ -48,14 +48,14 @@ let functions = [
       }
     };
   }),
-  iter(40, (i, p) => {
+  iter(60, (i, p) => {
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
     return (_) => {
       // Camera movement.
-      c.translate(0, 40 * smooth(4, 24) - 20);
+      c.translate(0, 40 * smooth(6, 24) - 20);
       // Z coordinate.
-      z = 80 - 2 * i - time * 40;
+      z = 120 - 2 * i - time * 80;
       if (z > 1) {
         c.scale(9 / z, 9 / z);
         // The x*x/30 is a planetary curvature factor.
@@ -63,7 +63,7 @@ let functions = [
 
         // Mountains
         // Mountains go from x=5..25
-        color(z / 20, 121, color(time * 4, 346, 534, 223, 111));
+        color(z / 20, 121, color(time * 3 - 0.2, 346, 534, 223, 111));
         // COLORS:
         // - desert brown (night): 443 -> 223
         // - lunar surface (night): 444 -> 222
@@ -76,13 +76,13 @@ let functions = [
         // Closest cloud is at z=11 or so, farthest at z=50 or so.
         z /= 50;
         color(
-          time * 5,
+          time * 4 - 0.2,
           // color(z, 137, 346), // clear day
           color(z, 889, 346), // cloudy day
           color(z, 222, 815, 933), // sunset
           color(z, 112, 334), // night
         );
-        c.globalAlpha = 1 - smooth(1.5 + i / 60, 8);
+        c.globalAlpha = 1 - smooth(3.5 + i / 60, 8);
         c.translate(time * 800, -25);
         c.scale(2, -1);
         c.fill(p);
@@ -136,7 +136,7 @@ let render = (t) => {
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
   zeroTime = zeroTime || t;
-  time = ((t - zeroTime) / 2e4) % 1;
+  time = ((t - zeroTime) / 3e4) % 1;
   requestAnimationFrame(render);
   color(0, 111);
   c.fillRect(-50, -50, 100, 100);
