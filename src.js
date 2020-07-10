@@ -64,9 +64,9 @@ let functions = [
         // Mountains
         // Mountains go from x=5..25
         color(
-          x,
-          color(z * 2, 121, color(time * 9 - 2, 346, 534, 223, 111)),
+          time * 30,
           145,
+          color(z * 2, 121, color(time * 9 - 2, 346, 534, 223, 111)),
         );
         // COLORS:
         // - desert brown (night): 443 -> 223
