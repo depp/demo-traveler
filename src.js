@@ -37,7 +37,7 @@ let functions = [
     w = Math.random() * 0.5 + 0.5;
     y = iter(3, (_) => 1 + 8 * Math.random());
     return (_) => {
-      z = i - time;
+      z = i; //  - time;
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z);
         c.scale(
@@ -52,7 +52,7 @@ let functions = [
       }
     };
   }),
-  iter(0, (i, p) => {
+  iter(30, (i, p) => {
     y = iter(8, (_) => 0);
     iter(
       6,
@@ -70,7 +70,6 @@ let functions = [
     return (_) => {
       // Z coordinate.
       x = 60 - 2 * i - time * 20;
-      c.translate(0, -20);
       // The x*x/40 is a planetary curvature factor.
       if (perspective(0, 10 + (x * x) / 40, x)) {
         c.translate(0, 10);
@@ -110,16 +109,24 @@ let color = (...b) => (
   (c.fillStyle = `rgb(${y})`)
 );
 
+// Smooth step function. Starts with value 0, changes smoothly to value 1.
+// Takes one paramater, which is the transition time, in the range 0..9. The
+// transition starts slightly before the given time and finishes slightly after.
+//
+// For example, smooth(4) changes from 0 to 1 at t=4/9.
+let smooth = (x) => 1 / (1 + 0.1 ** (9 * time - x));
+
 // Frame rendering callback.
 let render = (t) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
   zeroTime = zeroTime || t;
-  time = ((t - zeroTime) / 5e4) % 1;
+  time = ((t - zeroTime) / 5e3) % 1;
   requestAnimationFrame(render);
   color(111);
   c.fillRect(-50, -50, 100, 100);
+  c.translate(0, 20 * smooth(4) - 20);
   functions.map((x) => (c.save(), x(), c.restore()));
   c.restore();
 };
