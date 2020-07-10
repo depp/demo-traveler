@@ -25,16 +25,17 @@ let star = new Path2D('M-1,0L0,1L1,0L0,-1z');
 
 // Generate 10 random mountain ranges.
 let functions = [
-  iter(1e3, (i, x, y) => {
-    i = 1 - i / 1e3;
-    x = Math.random() - 0.5;
-    y = Math.random() - 0.5;
+  iter(4e3, (i, u, v, y) => {
+    i = 2 - i / 2e3;
+    u = Math.random() - 0.5;
+    v = Math.random() - 0.5;
+    y = iter(3, (_) => 156 + 99 * Math.random());
     return (time) => {
-      z = i - time * 0.5;
-      if (z > 1e-3 && z < 0.5) {
-        c.translate((x * 50) / z, (y * 50) / z);
+      z = i - time;
+      if (z > 1e-3 && z < 1) {
+        c.translate((u * 99) / z, (v * 99) / z);
         c.scale(0.4, 0.4);
-        c.fillStyle = '#fff';
+        c.fillStyle = `rgb(${y.map((x) => x * (1 - z))})`;
         c.fill(star);
       }
     };
