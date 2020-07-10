@@ -133,7 +133,7 @@ let smooth = (x, y) => 1 / (1 + Math.exp(y * 4 * (x / 9 - time)));
 let render = (t) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
-  c.scale(a.width * 0.01, a.width * 0.01);
+  c.scale(a.width / 99, a.width / 99);
   zeroTime = zeroTime || t - 2e3;
   time = ((t - zeroTime) / 3e4) % 1;
   requestAnimationFrame(render);
