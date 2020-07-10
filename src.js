@@ -132,13 +132,12 @@ let smooth = (x, y) => 1 / (1 + Math.exp(y * 4 * (x / 9 - time)));
 // Frame rendering callback.
 let render = (t) => {
   c.save();
+  c.fillRect(0, 0, a.width, a.height);
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width / 99, a.width / 99);
   zeroTime = zeroTime || t - 2e3;
   time = ((t - zeroTime) / 3e4) % 1;
   requestAnimationFrame(render);
-  color(0, 111);
-  c.fillRect(-50, -50, 100, 100);
   functions.map((x) => (c.save(), x(), c.restore()));
   color(0, 145);
   c.beginPath();
