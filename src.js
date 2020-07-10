@@ -60,7 +60,7 @@ let functions = [
   }),
   iter(30, (i, p) => {
     y = fractal(0, 0, 9);
-    p = new Path2D(`M0,50L${y.map((y, i) => [i, y]).join('L')}L500,50z`);
+    p = new Path2D(`M0,50${y.map((y, i) => ['L' + i, y])}L500,50z`);
     return (_) => {
       c.translate(0, 40 * smooth(4) - 20);
       // Z coordinate.
