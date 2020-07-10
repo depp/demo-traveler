@@ -63,7 +63,7 @@ let functions = [
 
         // Mountains
         // Mountains go from x=5..25
-        color(z / 20, 121, color(time * 3 - 0.2, 346, 534, 223, 111));
+        color(z / 20, 121, color(time * 9 - 0.6, 346, 534, 223, 111));
         // COLORS:
         // - desert brown (night): 443 -> 223
         // - lunar surface (night): 444 -> 222
@@ -79,7 +79,7 @@ let functions = [
           time * 4 - 0.2,
           // color(z, 137, 346), // clear day
           color(z, 889, 346), // cloudy day
-          color(z, 222, 815, 933), // sunset
+          color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
         );
         c.globalAlpha = 1 - smooth(3.5 + i / 60, 8);
@@ -95,11 +95,10 @@ let functions = [
 // returns it as an array of RGB values in the range 0..255.
 //
 // This function generates a color from a linear gradient. The first parameter
-// is the position along the gradient from 0 to 1, the remaining parameters are
-// colors. The gradient is specified as a list of colors, which can either be
-// [R,G,B] arrays with values in the range 0-255, or can be three-digit numbers
-// with one digit for each channel. The digits may range from 1 to 9 (0 is not
-// used).
+// is the position along the gradient from 0 to N+1, the remaining parameters
+// are N colors. The colors can either be [R,G,B] arrays with values in the
+// range 0-255, or can be three-digit numbers with one digit for each channel.
+// The digits may range from 1 to 9 (0 is not used).
 //
 // For example, the color black is either 111 or [0,0,0]. White is 999 or
 // [255,255,255]. Red is 911 or [255,0,0].
@@ -107,10 +106,10 @@ let functions = [
 // Usage examples:
 //
 //     color(x, 111, 999); // Gradient, x=0 is black, x=1 is white.
-//     color(x, 911, 191, 119); // x=0 is red, x=0.5 is green, x=1 is blue
+//     color(x, 911, 191, 119); // x=0 is red, x=1 is green, x=2 is blue
 //     color(x, 111, color(y, 911, 119)); // Double gradient
 let color = (a, ...b) => (
-  ([x, y] = [...b.slice((a *= b.length - 1)), (x = b.pop()), x].map((y) =>
+  ([x, y] = [...b.slice(a), (x = b.pop()), x].map((y) =>
     y == +y ? [...('' + y)].map((y) => 32 * y - 32) : y,
   )),
   (y = iter(3, (i) => (1 - (a % 1)) * x[i] + (a % 1) * y[i])),
