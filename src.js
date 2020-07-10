@@ -15,15 +15,6 @@ let time;
 // Return an array 'a' with size 'i', where a[j] = x(j).
 let iter = (i, x) => [...Array(i).keys()].map(x);
 
-// Apply a perspective transformation to the canvas. This will make the
-// transformation for an object located at (x,y,z). X is right, Y is down, and Z
-// is forward. Returns true if the object should be drawn, otherwise the object
-// is clipped and should not be drawn.
-//
-// The front clipping plane is Z=1.
-let perspective = (x, y, z) =>
-  z > 1 && (c.scale((z = 9 / z), z), c.translate(x, y), 1);
-
 let star = new Path2D(
   'M-1,0A1,1,0,0,0,0,-1A1,1,0,0,0,1,0A1,1,0,0,0,0,1A1,1,0,0,0,-1,0',
 );
@@ -63,12 +54,14 @@ let functions = [
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,50L${y.map((y, i) => [i, x + y]).join('L')}L500,50z`);
     return (_) => {
+      // Camera movement.
       c.translate(0, 40 * smooth(4, 24) - 20);
       // Z coordinate.
       x = 80 - i - time * 40;
-      // The x*x/40 is a planetary curvature factor.
-      if (perspective(0, 10 + (x * x) / 30, x)) {
-        c.translate(-700, 10);
+      if (x > 1) {
+        c.scale(9 / x, 9 / x);
+        // The x*x/30 is a planetary curvature factor.
+        c.translate(-700, 20 + (x * x) / 30);
         if (i & 1) {
           // Closest cloud is at x==11 or so, farthest at x=40 or so
           // 0.7 ..
