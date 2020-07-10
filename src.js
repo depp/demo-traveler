@@ -27,17 +27,24 @@ let star = new Path2D(
 
 // Generate 10 random mountain ranges.
 let functions = [
-  iter(4e3, (i, u, v, y) => {
+  iter(4e3, (i, u, v, w, y) => {
     i = 2 - i / 2e3;
     u = Math.random() - 0.5;
     v = Math.random() - 0.5;
+    w = Math.random() * 0.5 + 0.5;
     y = iter(3, (_) => 1 + 8 * Math.random());
     return (time) => {
       z = i - time;
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z);
-        c.scale(0.4, 0.4);
-        c.fillStyle = color(y, z, 111);
+        c.scale(
+          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
+          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
+        );
+        c.fillStyle = color(y, z * z, 111);
+        c.fill(star);
+        c.scale(0.5, 0.5);
+        c.fillStyle = color(999, z * z, 111);
         c.fill(star);
       }
     };
@@ -106,7 +113,7 @@ let render = (time) => {
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
   zeroTime = zeroTime || time;
-  time = ((time - zeroTime) / 5e3) % 1;
+  time = ((time - zeroTime) / 5e4) % 1;
   requestAnimationFrame(render);
   c.fillStyle = color(111);
   c.fillRect(-50, -50, 100, 100);
