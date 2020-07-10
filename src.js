@@ -43,9 +43,9 @@ let functions = [
     w = Math.random() * 0.5 + 0.5;
     y = iter(3, (_) => 1 + 8 * Math.random());
     return (_) => {
-      z = i - smooth2(4.5) / 7;
+      z = i - smooth2(5, 9) / 3;
       if (z > 1e-3 && z < 1) {
-        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(4) - 1));
+        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(4, 24) - 1));
         c.scale(
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
           w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
@@ -58,17 +58,27 @@ let functions = [
       }
     };
   }),
-  iter(30, (i, p) => {
-    y = fractal(0, 0, 9);
-    p = new Path2D(`M0,50${y.map((y, i) => ['L' + i, y])}L500,50z`);
+  iter(80, (i, p) => {
+    x = (i & 1) * Math.random() * 20;
+    y = fractal(0, 0, 10);
+    p = new Path2D(`M0,50L${y.map((y, i) => [i, x + y]).join('L')}L500,50z`);
     return (_) => {
-      c.translate(0, 40 * smooth(4) - 20);
+      c.translate(0, 40 * smooth(4, 24) - 20);
       // Z coordinate.
-      x = 60 - 2 * i - time * 20;
+      x = 80 - i - time * 40;
       // The x*x/40 is a planetary curvature factor.
-      if (perspective(0, 10 + (x * x) / 40, x)) {
-        c.translate(-250, 10);
-        color(452, (x / 40) ** 0.3, 223);
+      if (perspective(0, 10 + (x * x) / 30, x)) {
+        c.translate(-700, 10);
+        if (i & 1) {
+          // Closest cloud is at x==11 or so, farthest at x=40 or so
+          // 0.7 ..
+          color(223, (x / 50 - 0.2) * 1, 445);
+          c.globalAlpha = 1 - smooth(1.5 + i / 60, 8);
+          c.translate(time * 800, -25);
+          c.scale(2, -1);
+        } else {
+          color(452, x ** 0.3 / 3, 223);
+        }
         c.fill(p);
       }
     };
@@ -104,13 +114,17 @@ let color = (...b) => (
   (c.fillStyle = `rgb(${y})`)
 );
 
-// Smooth step function. Starts with value 0, changes smoothly to value 1.
-// Takes one paramater, which is the transition time, in the range 0..9. The
+// Smooth step function. Starts with value 0, changes smoothly to value 1. Takes
+// two paramaters, which are the transition time, in the range 0..9, and the
+// transition speed, which is a positive number (24 is fast, 8 is slower). The
 // transition starts slightly before the given time and finishes slightly after.
 //
-// For example, smooth(4) changes from 0 to 1 at t=4/9.
-let smooth = (x) => 1 / (1 + Math.exp(96 * (x / 9 - time)));
-let smooth2 = (x) => (x / 9 - time < 0 ? 0.5 - 24 * (x / 9 - time) : smooth(x));
+// For example, smooth(4, 24) changes from 0 to 1 at t=4/9.
+// The smooth2 function identical to smooth until the transition time, and
+// increases linearly afterwards.
+let smooth = (x, y) => 1 / (1 + Math.exp(y * 4 * (x / 9 - time)));
+let smooth2 = (x, y) =>
+  x / 9 - time < 0 ? 0.5 - y * (x / 9 - time) : smooth(x, y);
 
 // Frame rendering callback.
 let render = (t) => {
@@ -118,7 +132,7 @@ let render = (t) => {
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
   zeroTime = zeroTime || t;
-  time = ((t - zeroTime) / 1e4) % 1;
+  time = ((t - zeroTime) / 2e4) % 1;
   requestAnimationFrame(render);
   color(111);
   c.fillRect(-50, -50, 100, 100);
