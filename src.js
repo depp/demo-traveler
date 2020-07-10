@@ -31,13 +31,13 @@ let functions = [
     i = 2 - i / 2e3;
     u = Math.random() - 0.5;
     v = Math.random() - 0.5;
-    y = iter(3, (_) => 156 + 99 * Math.random());
+    y = iter(3, (_) => 1 + 8 * Math.random());
     return (time) => {
       z = i - time;
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z);
         c.scale(0.4, 0.4);
-        c.fillStyle = `rgb(${y.map((x) => x * (1 - z))})`;
+        c.fillStyle = color(y, z, 111);
         c.fill(star);
       }
     };
@@ -75,7 +75,8 @@ let functions = [
 //
 // Colors are specified as RGB in decimal, with 111 black, 119 is blue, and 999
 // is white. After the first color, each next color is mixed in linearly, using
-// an interpolation coefficient that comes before the color.
+// an interpolation coefficient that comes before the color. Colors can either
+// be arrays or integers, so 123 is the same as [1,2,3].
 //
 // For example,
 //
@@ -92,7 +93,9 @@ let color = (...b) => (
   b.map((z, i) =>
     i & 1
       ? (x = z < 0 ? 0 : z > 1 ? 1 : z)
-      : (y = y.map((y, i) => y * (1 - x) + 32 * x * ((z + '')[i] - 1))),
+      : (y = y.map(
+          (y, i) => y * (1 - x) + x * 32 * ((z == +z ? z + '' : z)[i] - 1),
+        )),
   ),
   `rgb(${y})`
 );
