@@ -4,7 +4,7 @@
 var title = 'Star Traveler';
 
 // Temporary variables.
-let x, y;
+let x, y, z;
 
 // Timestamp of start of animation.
 let zeroTime = 0;
@@ -21,32 +21,51 @@ let iter = (i, x) => [...Array(i).keys()].map(x);
 let perspective = (x, y, z) =>
   z > 1 && (c.scale((z = 9 / z), z), c.translate(x, y), 1);
 
+let star = new Path2D('M-1,0L0,1L1,0L0,-1z');
+
 // Generate 10 random mountain ranges.
-let functions = iter(30, (i, p) => {
-  y = iter(8, (_) => 0);
-  iter(
-    6,
-    (i) =>
-      (y = y.flatMap((y, j) =>
-        j
-          ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.51 ** i, (x = y)]
-          : [(x = y)],
-      )),
-  );
-  x = y.length / 2;
-  p = new Path2D(`M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`);
-  return (time) => {
-    // Z coordinate.
-    x = 60 - 2 * i - time * 20;
-    c.translate(0, -20);
-    // The x*x/40 is a planetary curvature factor.
-    if (perspective(0, 10 + (x * x) / 40, x)) {
-      c.translate(0, 10);
-      c.fillStyle = color(452, (x / 40) ** 0.3, 223);
-      c.fill(p);
-    }
-  };
-});
+let functions = [
+  iter(1000, (i, x, y) => {
+    x = (Math.random() - 0.5) * 1000;
+    y = (Math.random() - 0.5) * 1000;
+    return (time) => {
+      z = 200 - 0.2 * i - time * 20;
+      if (z > 1) {
+        c.translate(x / z, y / z);
+        c.scale(0.4, 0.4);
+        c.fillStyle = '#fff';
+        c.fill(star);
+      }
+    };
+  }),
+  iter(0, (i, p) => {
+    y = iter(8, (_) => 0);
+    iter(
+      6,
+      (i) =>
+        (y = y.flatMap((y, j) =>
+          j
+            ? [(x + y) / 2 + (Math.random() - 0.5) * 15 * 0.51 ** i, (x = y)]
+            : [(x = y)],
+        )),
+    );
+    x = y.length / 2;
+    p = new Path2D(
+      `M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`,
+    );
+    return (time) => {
+      // Z coordinate.
+      x = 60 - 2 * i - time * 20;
+      c.translate(0, -20);
+      // The x*x/40 is a planetary curvature factor.
+      if (perspective(0, 10 + (x * x) / 40, x)) {
+        c.translate(0, 10);
+        c.fillStyle = color(452, (x / 40) ** 0.3, 223);
+        c.fill(p);
+      }
+    };
+  }),
+].flat();
 
 // Function to generate colors. Uses x, y.
 //
@@ -82,7 +101,7 @@ let render = (time) => {
   zeroTime = zeroTime || time;
   time = ((time - zeroTime) / 5e3) % 1;
   requestAnimationFrame(render);
-  c.fillStyle = color(555);
+  c.fillStyle = color(111);
   c.fillRect(-50, -50, 100, 100);
   functions.map((x) => (c.save(), x(time), c.restore()));
   c.restore();
