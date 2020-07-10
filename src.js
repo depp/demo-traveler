@@ -9,6 +9,9 @@ let x, y, z;
 // Timestamp of start of animation.
 let zeroTime = 0;
 
+// Current time.
+let time;
+
 // Return an array 'a' with size 'i', where a[j] = x(j).
 let iter = (i, x) => [...Array(i).keys()].map(x);
 
@@ -33,7 +36,7 @@ let functions = [
     v = Math.random() - 0.5;
     w = Math.random() * 0.5 + 0.5;
     y = iter(3, (_) => 1 + 8 * Math.random());
-    return (time) => {
+    return (_) => {
       z = i - time;
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z);
@@ -64,7 +67,7 @@ let functions = [
     p = new Path2D(
       `M-${x},50L${y.map((y, i) => [i - x, y]).join('L')}L${x},50z`,
     );
-    return (time) => {
+    return (_) => {
       // Z coordinate.
       x = 60 - 2 * i - time * 20;
       c.translate(0, -20);
@@ -108,16 +111,16 @@ let color = (...b) => (
 );
 
 // Frame rendering callback.
-let render = (time) => {
+let render = (t) => {
   c.save();
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width * 0.01, a.width * 0.01);
-  zeroTime = zeroTime || time;
-  time = ((time - zeroTime) / 5e4) % 1;
+  zeroTime = zeroTime || t;
+  time = ((t - zeroTime) / 5e4) % 1;
   requestAnimationFrame(render);
   color(111);
   c.fillRect(-50, -50, 100, 100);
-  functions.map((x) => (c.save(), x(time), c.restore()));
+  functions.map((x) => (c.save(), x(), c.restore()));
   c.restore();
 };
 
