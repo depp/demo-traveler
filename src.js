@@ -49,41 +49,43 @@ let functions = [
       }
     };
   }),
-  iter(80, (i, p) => {
+  iter(40, (i, p) => {
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
     return (_) => {
       // Camera movement.
       c.translate(0, 40 * smooth(4, 24) - 20);
       // Z coordinate.
-      z = 80 - i - time * 40;
+      z = 80 - 2 * i - time * 40;
       if (z > 1) {
         c.scale(9 / z, 9 / z);
         // The x*x/30 is a planetary curvature factor.
         c.translate(-700, 20 + (z * z) / 30);
-        if (i & 1) {
-          // Closest cloud is at z=11 or so, farthest at z=50 or so.
-          z /= 50;
-          color(
-            time * 5,
-            // color(z, 137, 346), // clear day
-            color(z, 889, 346), // cloudy day
-            color(z, 222, 815, 933), // sunset
-            color(z, 112, 334), // night
-          );
-          c.globalAlpha = 1 - smooth(1.5 + i / 60, 8);
-          c.translate(time * 800, -25);
-          c.scale(2, -1);
-        } else {
-          // Mountains go from x=5..25
-          color(z / 20, 121, color(time * 4, 346, 534, 223, 111));
-          // COLORS:
-          // - desert brown (night): 443 -> 223
-          // - lunar surface (night): 444 -> 222
-          // - forest (day): 121 -> 346
-          // - forest (?): 121 445
-          // - sunset: -> 445
-        }
+
+        // Mountains
+        // Mountains go from x=5..25
+        color(z / 20, 121, color(time * 4, 346, 534, 223, 111));
+        // COLORS:
+        // - desert brown (night): 443 -> 223
+        // - lunar surface (night): 444 -> 222
+        // - forest (day): 121 -> 346
+        // - forest (?): 121 445
+        // - sunset: -> 445
+        c.fill(p);
+
+        // Clouds
+        // Closest cloud is at z=11 or so, farthest at z=50 or so.
+        z /= 50;
+        color(
+          time * 5,
+          // color(z, 137, 346), // clear day
+          color(z, 889, 346), // cloudy day
+          color(z, 222, 815, 933), // sunset
+          color(z, 112, 334), // night
+        );
+        c.globalAlpha = 1 - smooth(1.5 + i / 60, 8);
+        c.translate(time * 800, -25);
+        c.scale(2, -1);
         c.fill(p);
       }
     };
