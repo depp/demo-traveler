@@ -33,7 +33,7 @@ let functions = [
     w = w / 4 + 0.5;
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
-      z = i - smooth2(7, 9);
+      z = i - (time < 0.8 ? smooth(7.2, 9) : 9 * time - 6.7);
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 24) - 1));
         c.scale(
@@ -123,11 +123,7 @@ let color = (a, ...b) => (
 // transition starts slightly before the given time and finishes slightly after.
 //
 // For example, smooth(4, 24) changes from 0 to 1 at t=4/9.
-// The smooth2 function identical to smooth until the transition time, and
-// increases linearly afterwards.
 let smooth = (x, y) => 1 / (1 + Math.exp(y * 4 * (x / 9 - time)));
-let smooth2 = (x, y) =>
-  x / 9 - time < 0 ? 0.5 - y * (x / 9 - time) : smooth(x, y);
 
 // Frame rendering callback.
 let render = (t) => {
