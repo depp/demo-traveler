@@ -8,6 +8,8 @@ This is a demo for [JS1024](https://js1024.fun/), July 2020. Final size is 1006 
 
 Open the file final/demo.html in your browser.
 
+For now, you can download it from GitHub here: [demo.html](https://raw.githubusercontent.com/depp/demo-traveler/trunk/final/demo.html) (right-click and “save link as”)
+
 ## Building
 
 You must first make sure the Git submodule (RegPack) is checked out, and the Yarn dependencies installed.
