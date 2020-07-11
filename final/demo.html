@@ -1,0 +1,77 @@
+<!doctype html>
+<head>
+	<title>Star Traveler ~ js1024</title>
+	<meta name="author" content="Author"></meta>
+	<meta name="description" content="Short description"></meta>
+	<meta name="title" content="Title"></meta>
+	<meta charset=utf-8>
+</head>
+<body id=b>
+<canvas id=a></canvas>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+#a { position: relative; display: block; }
+.play { position: fixed; top: 50%; left: 50%; transform: translateX(-50%)translateY(-50%); font-size: 30px; font-family: arial, sans-serif; background: #f3f4f5; padding: 15px; border: 2px solid #ddd; border-radius: 5px; }
+</style>
+
+<script>
+
+// Entry configuration
+// ===================
+
+var title = "Star Traveler"; // this will be assigned automatically
+
+// Shim setup and polyfills (do not edit)
+// ======================================
+
+// canvas automatically adjusted !
+a.width = innerWidth;
+a.height = innerHeight;
+
+c = a.getContext("2d"); // no more $type conditional
+
+d = document;
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+a.requestPointerLock = a.requestPointerLock || a.mozRequestPointerLock || a.webkitRequestPointerLock;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+if (typeof OscillatorNode !== 'undefined' && OscillatorNode.prototype) {
+  OscillatorNode.prototype.start = OscillatorNode.prototype.start || OscillatorNode.prototype.noteOn;
+  OscillatorNode.prototype.stop = OscillatorNode.prototype.stop || OscillatorNode.prototype.noteOff;
+}
+
+// Add a start button if sound is present in the code
+onload = () => {
+  var entry_code = entry.innerText;
+  var has_sound = false;
+  if(entry_code.includes('eval')){
+    try {
+      eval(entry_code.replace(/eval\(/g, 'throw(').replace(/eval\`/g, 'throw`'));
+    }
+    catch(e){
+      entry_code = e;
+    }
+  }
+  if(entry_code.includes("AudioContext")||entry_code.includes("Oscillator")||entry_code.includes("speak")||entry_code.includes("play")||entry_code.includes("autoplay")){
+    b.insertAdjacentHTML("beforeEnd", "<button class='play' onclick='console.log(entry.innerText);eval(entry.innerText);this.remove()'>PLAY</button>");
+  }
+  else {
+    eval(entry.innerText);
+  }
+};
+console.log(
+  a, // canvas
+  b, // body
+  c, // 2D canvas context
+  d  // document
+);
+
+</script>
+
+<script type=text id=entry>
+// Your entry goes here 👇
+// =======================
+for(_='(a__,^2*K.5J/2I(eH()G0,Z(ZZY.2/Xe3,W(l=VJ)*(U-2T1,athtranslate(&&(c.0*d([...99),c.fill,111(se,t=i(3,l,=>,a.height)].flatG)))(c.save((restoreG)=new P2D(	.map(o(a.width^e)scale(M.randomG(h/4+U1.2-l)+.KAZZZh=0;i=Array_).keysG]e);s	"M-0Z-10Z1-0");n=^,l)t--?V_+e)I+(-Ut<5)*K*tI,[n^tn():[a];m=[i(5W^,h,n)([,h]a-Jna+150*iV5-a/1e3-M.log1p(9**(r-8>.001&&l<1*e/*t/lT6,-9),l*nJ,Jl*9i(6ZH	`MZL${nY10)[e,a]).join("L")}L1W`tV2-aI5-r/5)>.02Z46,9)T0T0Z-9)XXl-70Z20+l*l*803*r,145,o(K12o(rT,346,534,223,111,c.fillH.7*r-o(889,346K222,815,933112,334)globalAlpha=d(3J+T80*r,T52,-1H;o=^...l)_*=a>Z[]=l.slice_e=l.pop(e]aa==+a?""+a]a3Ka-32):aStyle=`rgb(${tl(1-a%1)*e[l]+a%1*t[l])})`,t);d=1/(1+3**H*_-r;f=eRectYII/,/h=h||eTWr=H-h)/3e3%1ZrequestAnimationFrame(fmaaZ145beginP(arcYX(10-rZ7;fG';G=/[-T-ZG-K^_]/.exec(_);)with(_.split(G))_=join(shift());eval(_)
+// =======================
+</script>
+</body>
