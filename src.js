@@ -46,8 +46,11 @@ let functions = [
     };
   }),
   iter(60, (i, p) => {
-    y = fractal(0, 0, 10);
-    p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99`);
+    p = new Path2D(
+      `M0,99L${fractal(0, 0, 10)
+        .map((y, i) => [i, y])
+        .join('L')}L500,99`,
+    );
     return (_) => {
       // Z coordinate.
       if ((z = 2 - i / 25 - time / 5) > 0.02) {
