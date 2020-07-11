@@ -32,7 +32,7 @@ let functions = [
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
       if ((z = 5 - i / 1e3 - Math.log1p(9 ** (time - 8))) > 1e-3 && z < 1) {
-        c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 9) - 1));
+        c.translate((u * 99) / z, (v * 99) / z - 20 * smooth(6, -9));
         c.scale(
           (w / 4 + 0.5) * (1.2 - z) + 0.2 * Math.random(),
           (w / 4 + 0.5) * (1.2 - z) + 0.2 * Math.random(),
