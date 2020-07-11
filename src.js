@@ -85,7 +85,7 @@ let functions = [
           color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
         );
-        c.globalAlpha = 1 - smooth(3.5 + i / 60, 4);
+        c.globalAlpha = smooth(3.5 + z, -4);
         c.translate(time * 800, -25);
         c.scale(2, -1);
         c.fill(p);
