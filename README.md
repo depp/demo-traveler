@@ -2,15 +2,17 @@
 
 This is a demo for [JS1024](https://js1024.fun/), July 2020. Final size is 1006 bytes. Tested in Firefox, Chrome, and Safari (desktop).
 
+[JS1024 entry](https://www.js1024.fun/demos/2020#27)
+
 ![Mountain flyby](sample.gif)
 
-See also: [Recording on YouTube](https://www.youtube.com/watch?v=XO-GeD-VRgU)
+## How can I see it?
 
-## How can I run it?
+The demo can be seen live on the JS1024 website: [Star Traveler (JS1024)](https://www.js1024.fun/demos/2020#27).
 
-Open the file final/demo.html in your browser.
+Alternatively, you can open the file final/demo.html in your browser. For now, you can download it from GitHub here: [demo.html](https://raw.githubusercontent.com/depp/demo-traveler/trunk/final/demo.html) (right-click and “save link as”)
 
-For now, you can download it from GitHub here: [demo.html](https://raw.githubusercontent.com/depp/demo-traveler/trunk/final/demo.html) (right-click and “save link as”)
+A recording is available on YouTube: [Star Traveler (YouTube)](https://www.youtube.com/watch?v=XO-GeD-VRgU)
 
 ## Building
 
