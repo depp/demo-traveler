@@ -50,45 +50,41 @@ let functions = [
         .map((y, i) => [i, y])
         .join('L')}L1e3,99`,
     );
-    return (_) => {
+    return (_) =>
       // Z coordinate.
-      if ((z = 2 - i / 25 - time / 5) > 0.02) {
-        // Camera movement.
-        c.translate(0, 40 * smooth(6, 9) - 20 - 200 * smooth(0, -9));
-        c.scale(0.2 / z, 0.2 / z);
-        // The x*x*80 is a planetary curvature factor.
-        c.translate(-700, 20 + z * z * 80);
-
-        // Mountains
-        // Mountains go from x=5..25
-        color(
-          time * 3,
-          145,
-          color(z * 2, 121, color(time - 2, 346, 534, 223, 111)),
-        );
-        // COLORS:
-        // - desert brown (night): 443 -> 223
-        // - lunar surface (night): 444 -> 222
-        // - forest (day): 121 -> 346
-        // - forest (?): 121 445
-        // - sunset: -> 445
-        c.fill(p);
-
-        // Clouds
-        // Closest cloud is at z=11 or so, farthest at z=50 or so.
-        color(
-          time * 0.7 - 1,
-          // color(z, 137, 346), // clear day
-          color(z, 889, 346), // cloudy day
-          color(z * 2, 222, 815, 933), // sunset
-          color(z, 112, 334), // night
-        );
-        c.globalAlpha = smooth(3.5 + z, -2);
-        c.translate(time * 80, -25);
-        c.scale(2, -1);
-        c.fill(p);
-      }
-    };
+      (z = 2 - i / 25 - time / 5) > 0.02 &&
+      // Camera movement.
+      (c.translate(0, 40 * smooth(6, 9) - 20 - 200 * smooth(0, -9)),
+      c.scale(0.2 / z, 0.2 / z),
+      // The x*x*80 is a planetary curvature factor.
+      c.translate(-700, 20 + z * z * 80),
+      // Mountains
+      // Mountains go from x=5..25
+      color(
+        time * 3,
+        145,
+        color(z * 2, 121, color(time - 2, 346, 534, 223, 111)),
+      ),
+      // COLORS:
+      // - desert brown (night): 443 -> 223
+      // - lunar surface (night): 444 -> 222
+      // - forest (day): 121 -> 346
+      // - forest (?): 121 445
+      // - sunset: -> 445
+      c.fill(p),
+      // Clouds
+      // Closest cloud is at z=11 or so, farthest at z=50 or so.
+      color(
+        time * 0.7 - 1,
+        // color(z, 137, 346), // clear day
+        color(z, 889, 346), // cloudy day
+        color(z * 2, 222, 815, 933), // sunset
+        color(z, 112, 334), // night
+      ),
+      (c.globalAlpha = smooth(3.5 + z, -2)),
+      c.translate(time * 80, -25),
+      c.scale(2, -1),
+      c.fill(p));
   }),
 ].flat();
 
