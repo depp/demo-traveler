@@ -52,7 +52,7 @@ let functions = [
       // Z coordinate.
       if ((z = 2 - i / 25 - time / 5) > 0.02) {
         // Camera movement.
-        c.translate(0, 40 * smooth(6, 9) - 220 + 200 * smooth(0, 9));
+        c.translate(0, 40 * smooth(6, 9) - 20 - 200 * smooth(0, -9));
         c.scale(0.2 / z, 0.2 / z);
         // The x*x*80 is a planetary curvature factor.
         c.translate(-700, 20 + z * z * 80);
