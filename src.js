@@ -50,12 +50,11 @@ let functions = [
   iter(60, (i, p) => {
     y = fractal(0, 0, 10);
     p = new Path2D(`M0,99L${y.map((y, i) => [i, y]).join('L')}L500,99z`);
-    return (x) => {
-      // Camera movement.
-      c.translate(0, 40 * smooth(6, 9) - 220 + 200 * smooth(0, 9));
+    return (_) => {
       // Z coordinate.
-      z = 2 - i / 25 - time / 5;
-      if (z > 0.02) {
+      if ((z = 2 - i / 25 - time / 5) > 0.02) {
+        // Camera movement.
+        c.translate(0, 40 * smooth(6, 9) - 220 + 200 * smooth(0, 9));
         c.scale(0.2 / z, 0.2 / z);
         // The x*x*80 is a planetary curvature factor.
         c.translate(-700, 20 + z * z * 80);
