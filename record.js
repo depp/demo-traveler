@@ -1,6 +1,6 @@
 import * as WSCapture from '/__wscapture__/module.js';
 
-const videoLengthMS = 30 * 1000;
+const videoLengthMS = 32 * 1000;
 
 const canvas = document.getElementById('canvas');
 if (canvas == null) {
