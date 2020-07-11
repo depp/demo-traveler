@@ -112,8 +112,10 @@ let color = (a, ...b) => (
   ([x, y] = [...b.slice(a), (x = b.pop()), x].map((y) =>
     y == +y ? [...('' + y)].map((y) => 32 * y - 32) : y,
   )),
-  (y = iter(3, (i) => (1 - (a % 1)) * x[i] + (a % 1) * y[i])),
-  (c.fillStyle = `rgb(${y})`),
+  (c.fillStyle = `rgb(${(y = iter(
+    3,
+    (i) => (1 - (a % 1)) * x[i] + (a % 1) * y[i],
+  ))})`),
   y
 );
 
