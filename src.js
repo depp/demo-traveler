@@ -27,17 +27,16 @@ let fractal = (x, y, i, z) =>
 
 // Generate 10 random mountain ranges.
 let functions = [
-  iter(4e3, (i, u, v, w, y) => {
+  iter(5e3, (i, u, v, w, y) => {
     [u, v, w] = iter(3, (_) => Math.random() - 0.5);
     w = w / 4 + 0.5;
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
-      z = 4 - i / 1e3 - Math.log(1 + 9 ** (time - 8));
-      if (z > 1e-3 && z < 1) {
+      if ((z = 5 - i / 1e3 - Math.log1p(9 ** (time - 8))) > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 9) - 1));
         c.scale(
-          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
-          w * (z < 0.8 ? 1 - z : 0.2) + 0.2 * Math.random(),
+          w * (1.2 - z) + 0.2 * Math.random(),
+          w * (1.2 - z) + 0.2 * Math.random(),
         );
         color(z * z, y, 111);
         c.fill(star);
