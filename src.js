@@ -9,7 +9,7 @@ let x, y, z;
 // Timestamp of start of animation.
 let zeroTime = 0;
 
-// Current time.
+// Current time, ranging from 0..10.
 let time;
 
 // Return an array 'a' with size 'i', where a[j] = x(j).
@@ -32,7 +32,7 @@ let functions = [
     w = w / 4 + 0.5;
     y = iter(3, (_) => 99 + 150 * Math.random());
     return (_) => {
-      z = 4 - i / 1e3 - Math.log(1 + 9 ** (time * 9 - 8));
+      z = 4 - i / 1e3 - Math.log(1 + 9 ** (time - 8));
       if (z > 1e-3 && z < 1) {
         c.translate((u * 99) / z, (v * 99) / z + 20 * (smooth(6, 9) - 1));
         c.scale(
@@ -54,7 +54,7 @@ let functions = [
       // Camera movement.
       c.translate(0, 40 * smooth(6, 9) - 220 + 200 * smooth(0, 9));
       // Z coordinate.
-      z = 2 - i / 25 - time * 2;
+      z = 2 - i / 25 - time / 5;
       if (z > 0.02) {
         c.scale(0.2 / z, 0.2 / z);
         // The x*x*80 is a planetary curvature factor.
@@ -63,9 +63,9 @@ let functions = [
         // Mountains
         // Mountains go from x=5..25
         color(
-          time * 30,
+          time * 3,
           145,
-          color(z * 2, 121, color(time * 9 - 2, 346, 534, 223, 111)),
+          color(z * 2, 121, color(time - 2, 346, 534, 223, 111)),
         );
         // COLORS:
         // - desert brown (night): 443 -> 223
@@ -78,14 +78,14 @@ let functions = [
         // Clouds
         // Closest cloud is at z=11 or so, farthest at z=50 or so.
         color(
-          time * 6 - 1,
+          time * 0.7 - 1,
           // color(z, 137, 346), // clear day
           color(z, 889, 346), // cloudy day
           color(z * 2, 222, 815, 933), // sunset
           color(z, 112, 334), // night
         );
         c.globalAlpha = smooth(3.5 + z, -4);
-        c.translate(time * 800, -25);
+        c.translate(time * 80, -25);
         c.scale(2, -1);
         c.fill(p);
       }
@@ -121,12 +121,12 @@ let color = (a, ...b) => (
 );
 
 // Smooth step function. Starts with value 0, changes smoothly to value 1. Takes
-// two paramaters, which are the transition time, in the range 0..9, and the
+// two paramaters, which are the transition time, and the
 // transition speed, which is a positive number (24 is fast, 8 is slower). The
 // transition starts slightly before the given time and finishes slightly after.
 //
-// For example, smooth(4, 24) changes from 0 to 1 at t=4/9.
-let smooth = (x, y) => 1 / (1 + 3 ** (y * (x - time * 9)));
+// For example, smooth(4, 24) changes from 0 to 1 at t=4.
+let smooth = (x, y) => 1 / (1 + 3 ** (y * (x - time)));
 
 // Frame rendering callback.
 let render = (t) => {
@@ -135,12 +135,12 @@ let render = (t) => {
   c.translate(a.width / 2, a.height / 2);
   c.scale(a.width / 99, a.width / 99);
   zeroTime = zeroTime || t - 2e3;
-  time = ((t - zeroTime) / 3e4) % 1;
+  time = ((t - zeroTime) / 3e3) % 10;
   requestAnimationFrame(render);
   functions.map((x) => (c.save(), x(), c.restore()));
   color(0, 145);
   c.beginPath();
-  c.arc(0, 0, 0.02 / (1 - time), 0, 7);
+  c.arc(0, 0, 0.2 / (10 - time), 0, 7);
   c.fill();
   c.restore();
 };
