@@ -135,10 +135,11 @@ let render = (t) => (
   (time = ((t - zeroTime) / 3e3) % 10),
   requestAnimationFrame(render),
   functions.map((x) => (c.save(), x(), c.restore())),
-  color(0, 145),
-  c.beginPath(),
-  c.arc(0, 0, 0.2 / (10 - time), 0, 7),
-  c.fill(),
+  time > 7 &&
+    (color(time - 7, 111, 145),
+    c.beginPath(),
+    c.arc(0, 0, 0.2 / (10 - time), 0, 7),
+    c.fill()),
   c.restore()
 );
 
