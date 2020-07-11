@@ -49,7 +49,7 @@ let functions = [
     p = new Path2D(
       `M0,99L${fractal(0, 0, 10)
         .map((y, i) => [i, y])
-        .join('L')}L500,99`,
+        .join('L')}L1e3,99`,
     );
     return (_) => {
       // Z coordinate.
@@ -131,21 +131,21 @@ let color = (a, ...b) => (
 let smooth = (x, y) => 1 / (1 + 3 ** (y * (x - time)));
 
 // Frame rendering callback.
-let render = (t) => {
-  c.save();
-  c.fillRect(0, 0, a.width, a.height);
-  c.translate(a.width / 2, a.height / 2);
-  c.scale(a.width / 99, a.width / 99);
-  zeroTime = zeroTime || t - 2e3;
-  time = ((t - zeroTime) / 3e3) % 10;
-  requestAnimationFrame(render);
-  functions.map((x) => (c.save(), x(), c.restore()));
-  color(0, 145);
-  c.beginPath();
-  c.arc(0, 0, 0.2 / (10 - time), 0, 7);
-  c.fill();
-  c.restore();
-};
+let render = (t) => (
+  c.save(),
+  c.fillRect(0, 0, a.width, a.height),
+  c.translate(a.width / 2, a.height / 2),
+  c.scale(a.width / 99, a.width / 99),
+  (zeroTime = zeroTime || t - 2e3),
+  (time = ((t - zeroTime) / 3e3) % 10),
+  requestAnimationFrame(render),
+  functions.map((x) => (c.save(), x(), c.restore())),
+  color(0, 145),
+  c.beginPath(),
+  c.arc(0, 0, 0.2 / (10 - time), 0, 7),
+  c.fill(),
+  c.restore()
+);
 
 // Rendering callback will call requestAnimationFrame.
 render();
