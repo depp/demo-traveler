@@ -4,7 +4,9 @@ This is a demo for [JS1024](https://js1024.fun/), July 2020. Final size is 1006 
 
 ![Mountain flyby](sample.gif)
 
-## How can I see it?
+See also: [Recording on YouTube](https://www.youtube.com/watch?v=XO-GeD-VRgU)
+
+## How can I run it?
 
 Open the file final/demo.html in your browser.
 
