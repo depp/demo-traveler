@@ -2,6 +2,8 @@
 
 This is a demo for [JS1024](https://js1024.fun/), July 2020. Final size is 1006 bytes. Tested in Firefox, Chrome, and Safari (desktop).
 
+First place in 2D canvas category! ([JS1024 Results - 2020](https://js1024.fun/results/2020))
+
 [JS1024 entry](https://www.js1024.fun/demos/2020#27)
 
 ![Mountain flyby](sample.gif)
